@@ -1,0 +1,117 @@
+EC2 AMAZON LINUX INSTANCE:--
+
+
+
+Container:- A way to package applications with all necessary dependencies and configurations.Easily portable and shared. It is the running env for an Image.
+Image:- It is a kind of package 	
+
+
+1.sudo yum install docker -y
+2.sudo service docker start
+3.sudo service docker status(It will show active running with green colour)
+4.docker run hello-world/nginx/postegrs(Run the container of hello world/nginx images from docker hub if not present locally)
+5.docker --version
+6.docker info (drivers,images details)
+7.docker ps -a(see all container)
+8.docker images(show all the images )
+9.docker build -t <registryname>/<reponame>:<tag> .
+10.docker build -t <dockerhub username><maven-web-app>:1 .
+11.docker push <registryname>/<reponame>:<tag> (To push the images to dockerhub)
+12.docker login -u <username> -p <password>
+13.docker rmi -f <imagename/id>(remove an image)
+14.docker search imagename(show all image that present in dockerhub)
+15.docker pull imagename(To download image from dockerhub to local machine)
+16.docker build -t vinay244/cloud_poc:1 .(To create an image in local machine)
+17. docker run -d -p 8080:8081 --name cloudpoccontainer vinay244/cloud_poc:1
+18.docker run -it --name <container_name> <image_name> /bin/bash(Create a container from the image on the local amchine)[run=create+start]
+19.docker start <container_name>(To start container)
+20.docker attach <container_name>(To go inside container)
+21.docker ps(see running containers)
+22.docker stop <container_name>(To stop container)
+23.docker rm <container_name>(To delete container)
+24. docker tag <image_name> <repo_name>(To tag ur image to dockerhub repo)
+25.docker tag <old_image> <new_image>
+26.docker push <imagename>
+27.docker exec -it <container_id/container_name> /bin/bash
+28.docker stop <container_name>(To stop container)
+29.docker rm <container_name>(remove a container)
+30.docker container create --name=vinay -it --mount source=shared-vol,target=/vinay/app ubuntu bash(Volume)
+ 
+
+
+
+How to install docker compose?
+1.sudo yum install python3-pip
+2.sudo pip3 install docker-compose # with root access
+            or 
+1.pip3 install --user docker-compose # without root access for security reasons
+check docker-compose -v or docker-compose --version
+
+docker-compose file:-
+
+version: '3'
+services:
+  nginx-server:
+    image: nginx
+    ports:
+      - 9090:80
+
+  database:
+    image: redis
+
+  python-demo:
+    build: ./
+    command: python3 hello.py
+
+  tomcat-server:
+    image: httpd
+    ports:
+      - 5050:82
+
+docker-compose build
+docker-compose up
+docker-compose down
+
+
+How to increase the volume size of EC2 instance:-
+-----------------------------------------------------
+1.Run ( df -h )to verify your root partition is full (100%)
+2.Run ( lsblk ) and then ( lsblk -f ) to get block device details.
+3.Run ( sudo mount -o size=30G,rw,nodev,nosuid -t tmpfs tmpfs /tmp )[30G increased volume]
+4.Run ( sudo growpart /dev/xvda 1 )
+5.Run ( sudo reboot )
+
+
+
+----------------------------------------------------------------------*********************************----------------------------------------------------
+
+How to create  create a container of the new iamge(ubuntu) and make some changes in it and from that container create an image and push to dockerhub and then pull the image from dockerhub in another machine and create a new container of it and check whether changes are showing or not?
+
+1. docker run -it --name <container-name> ubuntu /bin/bash (docker run -it --name vinaycontainer ubuntu /bin/bash)
+2. cd tmp/
+3. touch vinay
+4. exit
+5. docker diff <container-name> (docker diff vinaycontainer ):- To check the changes 
+6. docker commit <container-name> <image-name> (docker commit vinaycontainer new-image) :- It will create an image from the conatiner
+7. docker images
+8. docker login
+9. docker tag <image-id> <dockerhub-username>/<image-name>:tag (docker tag 6cf65bdc3f24 vinay244/new-image:latest)
+10. docker push <dockerhub-username>/<image-name>:tag (docker push vinay244/new-image:latest)
+
+login to another machine:-
+------------------------
+11. docker pull <dockerhub-username>/<image-name>:tag (docker pull vinay244/new-image:latest)
+12. docker run -it --name <new-conatiner-name> <image-name> /bin/bash (docker run -it --name vinaynewcontainer vinay244/new-image /bin/bash)
+13. cd tmp
+14. ls
+15. We can see vinay file	
+
+----------------------------------------------------------------**************************************----------------------------------------------------
+
+
+
+
+
+
+
+
